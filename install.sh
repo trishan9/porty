@@ -76,10 +76,33 @@ trap "rm -rf $TEMP_DIR" EXIT
 curl -fsSL "$URL" -o "$TEMP_DIR/$BIN_NAME"
 chmod +x "$TEMP_DIR/$BIN_NAME"
 
-if command -v sudo >/dev/null 2>&1; then
-    INSTALL_PATH="/usr/local/bin/$BIN_NAME"
-    echo -e "${CYAN}→ Installing to ${INSTALL_PATH} (requires sudo)...${RESET}"
-    sudo mv "$TEMP_DIR/$BIN_NAME" "$INSTALL_PATH"
+if command -v sudo &> /dev/null; then
+  BIN_PATH="/usr/local/bin/$BIN_NAME"
+  echo -e "${CYAN}→ Installing to $BIN_PATH (sudo required)...${RESET}"
+  sudo mv "$TEMP_DIR/$BIN_NAME" "$BIN_PATH"
+
+  # Check PATH
+  if ! echo "$PATH" | grep -q "/usr/local/bin"; then
+    echo -e "${YELLOW}⚠ Your PATH does not include /usr/local/bin${RESET}"
+    echo -e "${CYAN}→ Automatically adding it to your shell config...${RESET}"
+
+    if [ -f "$HOME/.zshrc" ]; then
+      echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.zshrc"
+      echo -e "${GREEN}✓ Added to ~/.zshrc${RESET}"
+    fi
+
+    if [ -f "$HOME/.bashrc" ]; then
+      echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.bashrc"
+      echo -e "${GREEN}✓ Added to ~/.bashrc${RESET}"
+    fi
+
+    if command -v fish >/dev/null; then
+      fish -c 'set -U fish_user_paths /usr/local/bin $fish_user_paths'
+      echo -e "${GREEN}✓ Added to fish PATH${RESET}"
+    fi
+
+    echo -e "${MAGENTA}Restart your terminal to apply changes.${RESET}"
+  fi
 else
     INSTALL_PATH="$HOME/.local/bin/$BIN_NAME"
     mkdir -p "$HOME/.local/bin"
