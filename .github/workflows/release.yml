@@ -34,7 +34,7 @@ jobs:
           echo "Building $OUTPUT"
 
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 \
-            go build -o "$OUTPUT" ./cmd/porty
+            go build -o "$OUTPUT" .
 
       - name: Upload binaries
         uses: actions/upload-artifact@v4
