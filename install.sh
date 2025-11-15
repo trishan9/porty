@@ -104,20 +104,20 @@ if command -v sudo &> /dev/null; then
     echo -e "${MAGENTA}Restart your terminal to apply changes.${RESET}"
   fi
 else
-    INSTALL_PATH="$HOME/.local/bin/$BIN_NAME"
+    BIN_PATH="$HOME/.local/bin/$BIN_NAME"
     mkdir -p "$HOME/.local/bin"
-    mv "$TEMP_DIR/$BIN_NAME" "$INSTALL_PATH"
+    mv "$TEMP_DIR/$BIN_NAME" "$BIN_PATH"
     echo -e "${YELLOW}⚠ ~/.local/bin added locally. Ensure it's in your PATH.${RESET}"
 fi
 
 
 echo
 echo -e "${GREEN}✓ Installation complete!${RESET}"
-echo -e "${MAGENTA}Installed at:${RESET} $INSTALL_PATH"
+echo -e "${MAGENTA}Installed at:${RESET} $BIN_PATH"
 echo
 echo -e "${CYAN}→ Testing porty...${RESET}"
 
-if ! "$INSTALL_PATH" --help >/dev/null 2>&1; then
+if ! "$BIN_PATH" --help >/dev/null 2>&1; then
     echo -e "${RED}✘ Something went wrong. Please check permissions.${RESET}"
     exit 1
 fi
