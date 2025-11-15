@@ -81,21 +81,47 @@ if command -v sudo &> /dev/null; then
   echo -e "${CYAN}→ Installing to $BIN_PATH (sudo required)...${RESET}"
   sudo mv "$TEMP_DIR/$BIN_NAME" "$BIN_PATH"
 
-  # Check PATH
-  if ! echo "$PATH" | grep -q "/usr/local/bin"; then
-    echo -e "${YELLOW}⚠ Your PATH does not include /usr/local/bin${RESET}"
+  # PATH check
+  if ! echo ":$PATH:" | grep -q ":/usr/local/bin:"; then
+    echo -e "${YELLOW}⚠ /usr/local/bin is not in your PATH${RESET}"
     echo -e "${CYAN}→ Automatically adding it to your shell config...${RESET}"
 
     if [ -f "$HOME/.zshrc" ]; then
-      echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.zshrc"
-      echo -e "${GREEN}✓ Added to ~/.zshrc${RESET}"
+      if ! grep -q "/usr/local/bin" "$HOME/.zshrc"; then
+        echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.zshrc"
+        echo -e "${GREEN}✓ Added to ~/.zshrc${RESET}"
+      fi
+    fi
+
+    if [ -f "$HOME/.zprofile" ]; then
+      if ! grep -q "/usr/local/bin" "$HOME/.zprofile"; then
+        echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.zprofile"
+        echo -e "${GREEN}✓ Added to ~/.zprofile${RESET}"
+      fi
     fi
 
     if [ -f "$HOME/.bashrc" ]; then
-      echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.bashrc"
-      echo -e "${GREEN}✓ Added to ~/.bashrc${RESET}"
+      if ! grep -q "/usr/local/bin" "$HOME/.bashrc"; then
+        echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.bashrc"
+        echo -e "${GREEN}✓ Added to ~/.bashrc${RESET}"
+      fi
     fi
 
+    if [ -f "$HOME/.bash_profile" ]; then
+      if ! grep -q "/usr/local/bin" "$HOME/.bash_profile"; then
+        echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.bash_profile"
+        echo -e "${GREEN}✓ Added to ~/.bash_profile${RESET}"
+      fi
+    fi
+
+    if [ -f "$HOME/.profile" ]; then
+      if ! grep -q "/usr/local/bin" "$HOME/.profile"; then
+        echo 'export PATH="/usr/local/bin:$PATH"' >> "$HOME/.profile"
+        echo -e "${GREEN}✓ Added to ~/.profile${RESET}"
+      fi
+    fi
+
+    # fish
     if command -v fish >/dev/null; then
       fish -c 'set -U fish_user_paths /usr/local/bin $fish_user_paths'
       echo -e "${GREEN}✓ Added to fish PATH${RESET}"
@@ -104,11 +130,11 @@ if command -v sudo &> /dev/null; then
     echo -e "${MAGENTA}Restart your terminal to apply changes.${RESET}"
   fi
 else
-    BIN_PATH="$HOME/.local/bin/$BIN_NAME"
-    mkdir -p "$HOME/.local/bin"
-    mv "$TEMP_DIR/$BIN_NAME" "$BIN_PATH"
-    echo -e "${YELLOW}⚠ ~/.local/bin added locally. Ensure it's in your PATH.${RESET}"
+  BIN_PATH="$HOME/.local/bin/$BIN_NAME"
+  mkdir -p "$HOME/.local/bin"
+  mv "$TEMP_DIR/$BIN_NAME" "$BIN_PATH"
 fi
+
 
 
 echo

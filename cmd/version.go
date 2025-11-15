@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var version = "0.1.0" // Update this when tagging releases
+var version = "1.0.0"
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
