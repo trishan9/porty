@@ -27,7 +27,7 @@ jobs:
         with:
           go-version: "1.22"
 
-      - name: Build binary
+      - name: Build
         run: |
           mkdir -p dist
           OUTPUT="dist/porty-${{ matrix.goos }}-${{ matrix.goarch }}"
@@ -36,11 +36,11 @@ jobs:
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 \
             go build -o "$OUTPUT" .
 
-      - name: Upload binaries
+      - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: porty-binaries
-          path: dist/*
+          name: porty-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/porty-${{ matrix.goos }}-${{ matrix.goarch }}
 
   release:
     name: Create Release
@@ -48,15 +48,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: porty-binaries
           path: dist
 
-      - name: Publish GitHub Release
+      - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*
+          files: dist/**/* 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
