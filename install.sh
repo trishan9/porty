@@ -21,7 +21,7 @@ cat << "EOF"
 ██╔     ██║   ██║██╔══██╗   ██║     ╚██╔╝  
 ██╔      ██████╔╝██║  ██║   ██║      ██║   
 ╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝    
-     A modern, port manager by @trishan9     
+     A modern, and minimal port manager      
 EOF
 }
 
